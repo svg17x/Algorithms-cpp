@@ -10,7 +10,7 @@ int bbox, bboy, detination_x, dextination_y, number_felxibility, f_x, f_y;
 vector<int> X = { 1, 1, 2, 2, -1, -1, -2, -2 };
 vector<int> Y = { 2, -2, 1, -1, 2, -2, 1, -1 };
 
-bool is_valid(int i, int j, int k) {
+bool valiable(int i, int j, int k) {
     return (i + X[k] > 0) && (i + X[k] <= bbox) && (j + Y[k] > 0) && (j + Y[k] <= bboy);
 }
 
@@ -50,7 +50,7 @@ public:
         }
     }
 
-    bool bfs(int now, vector<int>& fleas) {
+    bool bfs(int now, vector<int>& fs) {
         queue<int> buff;
         buff.push(now);
         vector<int> distances(vertices + 1, numeric_limits<int>::max());
@@ -68,12 +68,13 @@ public:
                 }
             }
         }
-        for (size_t i = 1; i != fleas.size(); ++i) {
-            if (!visited[fleas[i]]) {
-                // cout << "we are here" << '\n';
+        for (size_t i = 1; i != fs.size(); ++i) {
+            if (!visited[fs[i]]) {
+                // cout << "检查代码" << '\n';
                 return false;
             }
-            sum_ += distances[fleas[i]];
+            sum_ += distances[fs[i]];
+            //
         }
         return true;
     }
@@ -82,37 +83,39 @@ public:
         return (x - 1) * bbox + y;
     }
 
-    vector<int> create_graph(vector<F>& fleas_coords) {
-        vector<int> fleas(number_felxibility + 1);
+    vector<int> create_graph(vector<F>& fs_coords) {
+        vector<int> fs(number_felxibility + 1);
         for (int i = 1; i <= number_felxibility; ++i) {
-            fleas[i] = board[fleas_coords[i].x][fleas_coords[i].y];
+            fs[i] = board[fs_coords[i].x][fs_coords[i].y];
         }
+        //board记录不一样的精彩
         for (int i = 1; i <= bbox; ++i) {
             for (int j = 1; j <= bboy; ++j) {
                 for (int k = 0; k < 8; ++k) {
-                    if (is_valid(i, j, k)) {
+                    if (valiable(i, j, k)) {
                         Edge_addtional(board[i][j], board[i + X[k]][j + Y[k]]);
                     }
                 }
             }
         }
-        return fleas;
+        return fs;
     }
 
-    void solve(vector<F>& fleas_coords) {
+    void solve(vector<F>& fs_coords) {
         fill_board();
-        vector<int> fleas = create_graph(fleas_coords);
-        bfs(board[detination_x][dextination_y], fleas) ? cout << sum_<< '\n' : cout << "-1\n";
+        vector<int> fs = create_graph(fs_coords);
+        bfs(board[detination_x][dextination_y], fs) ? cout << sum_<< '\n' : cout << "-1\n";
+        //怎么不算呢
     }
 };
 
 int main() {
     cin >> bbox >> bboy >> detination_x >> dextination_y >> number_felxibility;
-    vector<F> fleas_coords(number_felxibility + 1);
+    vector<F> fs_coords(number_felxibility + 1);
     for (int i = 1; i <= number_felxibility; ++i) {
         cin >> f_x >> f_y;
-        fleas_coords[i] = {f_x, f_y};
+        fs_coords[i] = {f_x, f_y};
     }
     Graph g(bbox * bboy);
-    g.solve(fleas_coords);
+    g.solve(fs_coords);
 }
