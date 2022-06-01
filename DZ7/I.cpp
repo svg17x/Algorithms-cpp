@@ -6,26 +6,39 @@
 using namespace std;
 
 struct Node {
-    int quantity;
+    int num;
     int key;
     int left;
     int right;
-    int ancestor;
+    int parent;
     int count_black = 1;
     int color = 0;
-    int minimal;
-    int mximal;
+    int minim;
+    int maxim;
 };
 
-class Binary_search_tree {
+class BST {
     int n;
     int root;
     vector<Node> a;
     bool is_correct_BR = true;
 
+    /* int insert(int node, int key) {
+        if (a[node].num == 0) {
+            a[node].key = key;
+        } else {
+            if (key < a[node].key) {
+                a[node].left = insert(a[node].left, key);
+            } else if (key > a[node].key) {
+                a[node].right = insert(a[node].right, key);
+            }
+        }
+        return node;
+    }*/
+
 public:
 
-    Binary_search_tree() {
+    BST() {
         cin >> n;
         if (n != 0) {
             a.resize(n + 1);
@@ -33,12 +46,16 @@ public:
         }
     };
 
+    /*void insert(int value) {
+        root = insert(root, value);
+    }*/
+
     void Process() {
         if (n > 0) {
             for (int i = 0; i < n; ++i) {
-                int quantity, key;
+                int num, key;
                 string left, right, color;
-                cin >> quantity >> key >> left >> right >> color;
+                cin >> num >> key >> left >> right >> color;
                 int color_ = static_cast<int>(color == "B");
                 int right_;
                 if (right != "null") {
@@ -52,42 +69,43 @@ public:
                 } else {
                     left_ = 0;
                 }
-                a[quantity].left = left_;
-                a[quantity].right = right_;
-                a[quantity].key = key;
-                a[quantity].minimal = key;
-                a[quantity].mximal = key;
-                a[quantity].color = color_;
-                a[left_].ancestor = quantity;
-                a[right_].ancestor = quantity;
+                a[num].left = left_;
+                a[num].right = right_;
+                a[num].key = key;
+                a[num].minim = key;
+                a[num].maxim = key;
+                a[num].color = color_;
+                a[left_].parent = num;
+                a[right_].parent = num;
             }
             is_correct_BR = (is_correct_BR) && (a[root].color == 1);
         }
     }
 
-    int number_kick_back_to_the_leaves(int node) {
+    int num_black_on_the_way_to_leafs(int node) {
         if (0 == node) {
             return 1;
         }
-        int d_right = number_kick_back_to_the_leaves(a[node].right);
-        int d_left = number_kick_back_to_the_leaves(a[node].left);
+        int d_right = num_black_on_the_way_to_leafs(a[node].right);
+        int d_left = num_black_on_the_way_to_leafs(a[node].left);
         is_correct_BR = (is_correct_BR) && (d_left == d_right);
 
         if (a[node].color == 0) {
-            int ancestor = a[node].ancestor;
-            is_correct_BR = (is_correct_BR) && ((a[ancestor].color == 1) (ancestor == 0));
+            int ancestor = a[node].parent;
+            // cout << "ancestor " << ancestor <<  '\n';
+            is_correct_BR = (is_correct_BR) && ((a[ancestor].color == 1)  (ancestor == 0));
         }
 
-        a[node].minimal = min(a[node].minimal, a[node].key);
+        a[node].minim = min(a[node].minim, a[node].key);
         if (a[node].left != 0)
-            a[node].minimal = min(a[node].minimal, a[a[node].left].minimal);
-        a[node].mximal = max(a[node].mximal, a[node].key);
+            a[node].minim = min(a[node].minim, a[a[node].left].minim);
+        a[node].maxim = max(a[node].maxim, a[node].key);
         if (a[node].right != 0)
-            a[node].mximal = max(a[node].mximal, a[a[node].right].mximal);
+            a[node].maxim = max(a[node].maxim, a[a[node].right].maxim);
 
         is_correct_BR = (is_correct_BR) &&
-                        ((a[node].key < a[a[node].right].minimal) a[node].right == 0) &&
-                        ((a[node].key > a[a[node].left].mximal) || a[node].left == 0);
+                        ((a[node].key < a[a[node].right].minim)  a[node].right == 0) &&
+                        ((a[node].key > a[a[node].left].maxim) || a[node].left == 0);
         return d_left + a[node].color;
     }
 
@@ -95,7 +113,7 @@ public:
         if (n == 0) {
             cout << "YES";
         } else {
-            number_kick_back_to_the_leaves(root);
+            num_black_on_the_way_to_leafs(root);
             is_correct_BR ? cout << "YES" : cout << "NO";
         }
 
@@ -103,7 +121,7 @@ public:
 };
 
 int main() {
-    Binary_search_tree my_tree;
+    BST my_tree;
     my_tree.Process();
     my_tree.PrintAns();
     return 0;
