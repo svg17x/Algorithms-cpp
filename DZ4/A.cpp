@@ -15,7 +15,6 @@ public:
     int source;
     vector<long> diss;
     int goal;
-    //她社恐她谁都躲
     DJ(int n) : verxx(n) {
         graph.resize(verxx + 1);
         have_been.resize(verxx + 1);
@@ -73,7 +72,6 @@ public:
             for (int i = 0; i < verxx; ++i) {
                 if (graph[now][i] != -1 && diss[now] + graph[now][i] < diss[i]) {
                     diss[i] = diss[now] + graph[now][i];
-                    //王天翔................
                 }
             }
             try_min_diss = numeric_limits<int>::max();
@@ -81,7 +79,6 @@ public:
                 if (!have_been[i] && diss[i] < try_min_diss) {
                     try_min_diss = diss[i];
                     try_min_index = i;
-                    //我完蛋了我陷入爱河了
                 }
             }
         }
@@ -94,7 +91,6 @@ int main() {
     cin >> num_verxx >> start_point >> end;
     //吸取数据
     Graph g(num_verxx, start_point - 1, end - 1);
-    //如果有一日能回到从前
     for (int i = 0; i < num_verxx; ++i) {
         for (int j = 0; j < num_verxx; ++j) {
             cin >> weight;
